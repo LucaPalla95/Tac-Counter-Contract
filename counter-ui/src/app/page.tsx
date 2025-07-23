@@ -89,8 +89,14 @@ function CounterApp() {
       };
       await tacSdk.sendCrossChainTransaction(evmProxyMsg, sender, []);
       await fetchCounter();
-    } catch {
-      setError("Transaction failed");
+    } catch (err) {
+      console.error("Transaction error:", err);
+      // Se err è un oggetto Error, puoi mostrare il messaggio
+      if (err instanceof Error) {
+        setError(`Transaction failed: ${err.message}`);
+      } else {
+        setError("Transaction failed: " + JSON.stringify(err));
+      }
     } finally {
       setLoading(false);
     }
