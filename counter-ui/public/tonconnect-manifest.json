@@ -1,0 +1,10 @@
+{
+  "manifest_version": "0.1",
+  "name": "TAC Counter",
+  "description": "A simple counter dApp on TAC using TON Connect",
+  "url": "http://localhost:3000",
+  "iconUrl": "http://localhost:3000/icon.png",
+  "termsOfUseUrl": "http://localhost:3000/terms",
+  "privacyPolicyUrl": "http://localhost:3000/privacy",
+  "redirectUrl": "http://localhost:3000"
+}
