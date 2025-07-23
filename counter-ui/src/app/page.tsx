@@ -84,7 +84,7 @@ function CounterApp() {
       }
       const evmProxyMsg = {
         evmTargetAddress: COUNTER_CONTRACT_ADDRESS,
-        methodName: method + (method === "setNumber" ? "(uint256)" : "()"),
+        methodName: method === "setNumber" ? "setNumber(uint256)" : method,
         encodedParameters: data,
       };
       await tacSdk.sendCrossChainTransaction(evmProxyMsg, sender, []);
