@@ -8,7 +8,8 @@ import { TacSdk, SenderFactory, Network } from "@tonappchain/sdk";
 import type { SenderAbstraction } from "@tonappchain/sdk";
 import { ethers } from "ethers";
 
-const COUNTER_CONTRACT_ADDRESS = "0xCB9aBaDdd0b1d150e96dF899908f8e520c723c37";
+const COUNTER_PROXY_CONTRACT_ADDRESS = "0xb0156E63054A4422D10479EaF2945b1bd857F650";
+const COUNTER_CONTRACT_ADDRESS = "0xfd02866AB9F98e5fCb867746c65E2C4B83fC2Beb";
 const TAC_EVM_RPC_URL = "https://spb.rpc.tac.build";
 const NETWORK = Network.TESTNET; // or Network.MAINNET
 
@@ -55,7 +56,7 @@ function CounterApp() {
     setError(null);
     try {
       const provider = new ethers.JsonRpcProvider(TAC_EVM_RPC_URL);
-      const contract = new ethers.Contract(COUNTER_CONTRACT_ADDRESS, COUNTER_ABI, provider);
+      const contract = new ethers.Contract(COUNTER_PROXY_CONTRACT_ADDRESS, COUNTER_ABI, provider);
       const value = await contract.getNumber();
       setCounter(Number(value));
     } catch {
@@ -83,7 +84,7 @@ function CounterApp() {
         data = iface.encodeFunctionData(method);
       }
       const evmProxyMsg = {
-        evmTargetAddress: COUNTER_CONTRACT_ADDRESS,
+        evmTargetAddress: COUNTER_PROXY_CONTRACT_ADDRESS,
         methodName: method === "setNumber" ? "setNumber(uint256)" : method,
         encodedParameters: data,
       };
