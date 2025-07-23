@@ -3,13 +3,12 @@ import { useEffect, useState } from "react";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { TonConnectUIProvider, useTonConnectUI, TonConnectButton, useTonWallet } from "@tonconnect/ui-react";
+import { TonConnectButton, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 import { TacSdk, SenderFactory, Network } from "@tonappchain/sdk";
+import type { SenderAbstraction } from "@tonappchain/sdk";
 import { ethers } from "ethers";
 
-// TODO: Replace with your deployed Counter contract address on TAC
 const COUNTER_CONTRACT_ADDRESS = "0xCB9aBaDdd0b1d150e96dF899908f8e520c723c37";
-// TODO: Replace with the correct TAC EVM RPC URL (see https://docs.tac.build/build/sdk/introduction)
 const TAC_EVM_RPC_URL = "https://spb.rpc.tac.build";
 const NETWORK = Network.TESTNET; // or Network.MAINNET
 
@@ -25,7 +24,7 @@ function CounterApp() {
   const [tonConnectUI] = useTonConnectUI();
   const wallet = useTonWallet();
   const [tacSdk, setTacSdk] = useState<TacSdk | null>(null);
-  const [sender, setSender] = useState<any>(null);
+  const [sender, setSender] = useState<SenderAbstraction | null>(null);
   const [counter, setCounter] = useState<number | null>(null);
   const [setValue, setSetValue] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -43,7 +42,7 @@ function CounterApp() {
         } else {
           setSender(null);
         }
-      } catch (e) {
+      } catch {
         setError("Failed to initialize TAC SDK");
       }
     })();
@@ -59,7 +58,7 @@ function CounterApp() {
       const contract = new ethers.Contract(COUNTER_CONTRACT_ADDRESS, COUNTER_ABI, provider);
       const value = await contract.getNumber();
       setCounter(Number(value));
-    } catch (e) {
+    } catch {
       setError("Failed to fetch counter value");
     } finally {
       setLoading(false);
@@ -68,7 +67,6 @@ function CounterApp() {
 
   useEffect(() => {
     fetchCounter();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tacSdk]);
 
   // Send transaction helper
@@ -91,7 +89,7 @@ function CounterApp() {
       };
       await tacSdk.sendCrossChainTransaction(evmProxyMsg, sender, []);
       await fetchCounter();
-    } catch (e) {
+    } catch {
       setError("Transaction failed");
     } finally {
       setLoading(false);
